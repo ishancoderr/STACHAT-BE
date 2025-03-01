@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: sh -c "uvicorn main:app --reload --port=5100 --host=0.0.0.0"
+    ports:
+      - "5100:5100"
+    volumes:
+      - .:/app
