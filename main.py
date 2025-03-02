@@ -1,8 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
+import hmac
+import hashlib
 
 # Load environment variables
 load_dotenv()
@@ -98,11 +100,28 @@ class QueryRequest(BaseModel):
 async def read_root():
     return {"message": "Welcome to STACHAT!"}
 
-@app.post("/query", tags=["Query"])
-async def query_dataset(request: QueryRequest):
-    try:
-        # Run the pipeline with the provided question
-        response = graph_chain.invoke(request.question)
-        return {"response": response}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.post("/webhook", tags=["Webhook"])
+async def webhook(request: Request):
+    secret = os.getenv("WEBHOOK_SECRET")
+    if secret:
+        signature = request.headers.get("X-Hub-Signature-256")
+        body = await request.body()
+        expected_signature = hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+        if (expected_signature != signature):
+            raise HTTPException(status_code=401, detail="Unauthorized for App") 
+        else:   
+            try:
+                # Parse the incoming JSON data
+                data = await request.json()
+                question = data.get("question")
+
+                if not question:
+                    raise HTTPException(status_code=400, detail="Question is required")
+
+                # Run the pipeline with the provided question
+                response = graph_chain.invoke(question)
+                return {"response": response}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized - Webhook secret not set")
