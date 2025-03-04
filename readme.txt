@@ -2,7 +2,8 @@
 activate virtual environment 
 ============================
 
- .\venv\Scripts\activate
+pip install -r requirements.txt
+.\venv\Scripts\activate
 
 ============================
 update requirements txt file

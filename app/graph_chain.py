@@ -72,8 +72,8 @@ class HybridRetriever(BaseRetriever, BaseModel):
 
     def _get_relevant_documents(self, query: str) -> List[Document]:
         try:
-            vector_docs = self.vector_retriever.get_relevant_documents(query)
-            bm25_docs = self.bm25_retriever.get_relevant_documents(query)
+            vector_docs = self.vector_retriever.invoke(query)
+            bm25_docs = self.bm25_retriever.invoke(query)
             combined_docs = vector_docs + bm25_docs
             return combined_docs
         except Exception as e:
@@ -96,10 +96,18 @@ Question: {question}
 """
 prompt = ChatPromptTemplate.from_template(template)
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
-graph_chain = (
-    {"context": hybrid_retriever, "question": RunnablePassthrough()}
-    | prompt
-    | llm
-    | StrOutputParser()
-)
+def get_graph_chain(model_name: str):
+    print('model name:', model_name)
+    if model_name == "gpt-3.5-turbo":
+        llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+    elif model_name == "gpt-4-turbo":
+        llm = ChatOpenAI(model_name="gpt-4-turbo", temperature=0) 
+    else:
+        raise ValueError(f"Unsupported model: {model_name}")
+
+    return (
+        {"context": hybrid_retriever, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )

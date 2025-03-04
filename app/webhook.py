@@ -3,12 +3,13 @@ from pydantic import BaseModel
 import os
 import hmac
 import hashlib
-from app.graph_chain import graph_chain
+from app.graph_chain import get_graph_chain
 
 router = APIRouter()
 
 class QueryRequest(BaseModel):
     question: str
+    model_name: str
 
 @router.post("/webhook", tags=["Webhook"])
 async def webhook(request: Request):
@@ -34,12 +35,17 @@ async def webhook(request: Request):
 
     try:
         data = await request.json()
-        question = data.get("question") 
+        question = data.get("question")
+        model_name = data.get("model_name") 
 
         if not question:
             raise HTTPException(status_code=400, detail="Question is required")
 
+        graph_chain = get_graph_chain(model_name)
+
+        # Now pass the question
         response = graph_chain.invoke(question)
+
         return {"response": response}
 
     except Exception as e:
