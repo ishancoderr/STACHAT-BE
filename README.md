@@ -1,37 +1,39 @@
-STACHAT API
+# STACHAT API
+
 This is a FastAPI-based application for querying datasets using LangChain and Neo4j. It provides a webhook endpoint for processing questions and returning responses.
 
-Table of Contents
-Prerequisites
+---
 
-Setup
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Setup](#setup)
+3. [Activate Virtual Environment](#activate-virtual-environment)
+4. [Update Requirements](#update-requirements)
+5. [Run the Application](#run-the-application)
+6. [Docker Commands](#docker-commands)
+7. [API Documentation](#api-documentation)
+8. [Project Structure](#project-structure)
+9. [License](#license)
 
-Activate Virtual Environment
+---
 
-Update Requirements
+## Prerequisites
 
-Run the Application
-
-Docker Commands
-
-API Documentation
-
-Prerequisites
 Before running the project, ensure you have the following installed:
 
-Python 3.8 or higher
+- **Python 3.8 or higher**
+- **Docker** (optional, for running with Docker)
+- **Docker Compose** (optional, for running with Docker)
 
-Docker (optional, for running with Docker)
+---
 
-Docker Compose (optional, for running with Docker)
+## Setup
 
-Setup
-Clone the repository:
+1. **Clone the repository:**
 
-bash
-Copy
-git clone <repository-url>
-cd <project-folder>
+   ```bash
+   git clone <repository_url>
+   cd <repository_directory>
 Create a virtual environment:
 
 bash
@@ -42,7 +44,9 @@ Install dependencies:
 bash
 Copy
 pip install -r requirements.txt
-Create a .env file in the root directory and add the following environment variables:
+Create a .env file:
+
+In the root directory, create a .env file and add the following environment variables:
 
 env
 Copy
@@ -55,10 +59,12 @@ Activate Virtual Environment
 To activate the virtual environment, run:
 
 On Windows:
+
 bash
 Copy
 .\venv\Scripts\activate
 On macOS/Linux:
+
 bash
 Copy
 source venv/bin/activate
@@ -102,23 +108,6 @@ Once the application is running, you can access the interactive API documentatio
 Swagger UI: http://127.0.0.1:8000/docs
 
 ReDoc: http://127.0.0.1:8000/redoc
-
-Project Structure
-Copy
-project/
-│
-├── app/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── webhook.py
-│   └── graph_chain.py
-│
-├── .env
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
-License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 This README.md file provides a comprehensive guide for setting up and running the project. It includes instructions for both local development and Docker-based deployment, making it easy for new contributors to get started.
